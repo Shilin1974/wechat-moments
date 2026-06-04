@@ -189,7 +189,7 @@
     return {
       content: params.get('content') || '',
       nickname: params.get('nickname') || '于否',
-      avatar: params.get('avatar') || '',
+      avatar: params.get('avatar') || 'https://shilin1974.github.io/wechat-moments/avatar.jpg',
       images: params.get('images') ? params.get('images').split(',').filter(Boolean) : []
     };
   }
