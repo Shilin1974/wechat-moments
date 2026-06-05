@@ -227,9 +227,10 @@
     }
   }
 
-  // 设置时间
+  // 设置时间（强制北京时间 UTC+8）
   function setTime() {
-    const now = new Date();
+    const utc = new Date().getTime() + new Date().getTimezoneOffset() * 60000;
+    const now = new Date(utc + 8 * 3600000);
     const hours = now.getHours();
     let period = '';
     if (hours < 6) period = '凌晨';
