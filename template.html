@@ -12,29 +12,35 @@
     overflow-x: hidden;
   }
 
+  /* 整体容器 */
+  .page {
+    position: relative;
+  }
+
   /* 封面图区域 */
   .cover {
     position: relative;
     width: 375px;
     height: 280px;
     background: #ddd;
-    overflow: hidden;
+    overflow: visible;
   }
-  .cover img {
+  .cover img.cover-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
   }
 
-  /* 封面底部的用户信息 */
+  /* 封面底部用户信息 - 头像半压在封面底边，昵称在头像左侧 */
   .profile {
     position: absolute;
     right: 12px;
-    bottom: 16px;
+    bottom: -25px;
     display: flex;
     align-items: center;
     flex-direction: row-reverse;
+    z-index: 5;
   }
   .profile-avatar {
     width: 64px;
@@ -46,10 +52,9 @@
     flex-shrink: 0;
   }
   .profile-name {
-    color: #fff;
-    font-size: 17px;
+    color: #576B95;
+    font-size: 16px;
     font-weight: 600;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
     margin-right: 10px;
     line-height: 1.2;
   }
@@ -180,33 +185,32 @@
 </head>
 <body>
 
-<!-- 整体容器，用于ScreenshotOne截取 -->
 <div class="page">
 
-<!-- 封面图 -->
-<div class="cover">
-  <img id="cover-img" src="https://shilin1974.github.io/wechat-moments/cover.jpg" alt="封面">
-  <div class="profile">
-    <img class="profile-avatar" id="profile-avatar" src="" alt="头像">
-    <span class="profile-name" id="profile-name"></span>
+  <!-- 封面图 -->
+  <div class="cover">
+    <img class="cover-img" id="cover-img" src="https://shilin1974.github.io/wechat-moments/cover.jpg" alt="封面">
+    <div class="profile">
+      <img class="profile-avatar" id="profile-avatar" src="" alt="头像">
+      <span class="profile-name" id="profile-name"></span>
+    </div>
   </div>
-</div>
 
-<!-- 导航栏 -->
-<div class="navbar">朋友圈</div>
+  <!-- 导航栏 -->
+  <div class="navbar">朋友圈</div>
 
-<!-- 朋友圈动态 -->
-<div class="moment">
-  <img class="avatar" id="avatar" src="" alt="头像">
-  <div class="nickname" id="nickname"></div>
-  <div class="content" id="content"></div>
-  <div class="images" id="images"></div>
-  <div class="footer">
-    <span class="time-text" id="time-text"></span>
-    <div class="action-btn"></div>
+  <!-- 朋友圈动态 -->
+  <div class="moment">
+    <img class="avatar" id="avatar" src="" alt="头像">
+    <div class="nickname" id="nickname"></div>
+    <div class="content" id="content"></div>
+    <div class="images" id="images"></div>
+    <div class="footer">
+      <span class="time-text" id="time-text"></span>
+      <div class="action-btn"></div>
+    </div>
   </div>
-</div>
-<div class="spacer"></div>
+  <div class="spacer"></div>
 
 </div><!-- /.page -->
 
