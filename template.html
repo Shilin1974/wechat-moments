@@ -10,10 +10,51 @@
     background: #fff;
     width: 375px;
     overflow-x: hidden;
-    padding-top: 16px;
   }
 
-  /* 顶部导航栏 */
+  /* 封面图区域 */
+  .cover {
+    position: relative;
+    width: 375px;
+    height: 280px;
+    background: #ddd;
+    overflow: hidden;
+  }
+  .cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* 封面底部的用户信息 */
+  .profile {
+    position: absolute;
+    right: 12px;
+    bottom: 16px;
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+  }
+  .profile-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    border: 2px solid #fff;
+    object-fit: cover;
+    background: #ddd;
+    flex-shrink: 0;
+  }
+  .profile-name {
+    color: #fff;
+    font-size: 17px;
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    margin-right: 10px;
+    line-height: 1.2;
+  }
+
+  /* 导航栏 */
   .navbar {
     background: #EDEDED;
     height: 44px;
@@ -23,9 +64,6 @@
     font-size: 17px;
     font-weight: 600;
     color: #000;
-    position: sticky;
-    top: 0;
-    z-index: 10;
   }
 
   /* 朋友圈内容区 */
@@ -36,7 +74,7 @@
     min-height: 80px;
   }
 
-  /* 底部留白，让内容不被截断 */
+  /* 底部留白 */
   .spacer {
     height: 16px;
   }
@@ -134,40 +172,7 @@
     letter-spacing: 1px;
   }
 
-  /* 点赞评论区 */
-  .interaction {
-    margin-top: 6px;
-    background: #F7F7F7;
-    border-radius: 3px;
-    padding: 6px 8px;
-    font-size: 13px;
-  }
-  .likes {
-    color: #576B95;
-    line-height: 1.5;
-    padding-bottom: 4px;
-    border-bottom: 0.5px solid #ECECEC;
-  }
-  .likes .heart {
-    color: #576B95;
-    margin-right: 4px;
-  }
-  .comments {
-    padding-top: 4px;
-  }
-  .comment-item {
-    line-height: 1.5;
-    margin-bottom: 2px;
-  }
-  .comment-item .commenter {
-    color: #576B95;
-    font-weight: 500;
-  }
-  .comment-item .comment-text {
-    color: #333;
-  }
-
-  /* 无图时隐藏images区域 */
+  /* 无图时隐藏 */
   .images:empty {
     display: none;
   }
@@ -175,8 +180,19 @@
 </head>
 <body>
 
+<!-- 封面图 -->
+<div class="cover">
+  <img id="cover-img" src="https://shilin1974.github.io/wechat-moments/cover.jpg" alt="封面">
+  <div class="profile">
+    <img class="profile-avatar" id="profile-avatar" src="" alt="头像">
+    <span class="profile-name" id="profile-name"></span>
+  </div>
+</div>
+
+<!-- 导航栏 -->
 <div class="navbar">朋友圈</div>
 
+<!-- 朋友圈动态 -->
 <div class="moment">
   <img class="avatar" id="avatar" src="" alt="头像">
   <div class="nickname" id="nickname"></div>
@@ -190,69 +206,75 @@
 <div class="spacer"></div>
 
 <script>
-  // 从URL参数读取数据
   function getParams() {
-    const params = new URLSearchParams(window.location.search);
+    var params = new URLSearchParams(window.location.search);
     return {
       content: params.get('content') || '',
       nickname: params.get('nickname') || '于否',
       avatar: params.get('avatar') || 'https://shilin1974.github.io/wechat-moments/avatar.jpg',
+      cover: params.get('cover') || '',
       images: params.get('images') ? params.get('images').split(',').filter(Boolean) : []
     };
   }
 
-  // 设置文本内容（防XSS）
   function setText(id, text) {
-    document.getElementById(id).textContent = text;
+    var el = document.getElementById(id);
+    if (el) el.textContent = text;
   }
 
-  // 渲染配图
-  function renderImages(images) {
-    const container = document.getElementById('images');
-    if (!images || images.length === 0) return;
+  function renderImages(imageList) {
+    var container = document.getElementById('images');
+    if (!imageList || imageList.length === 0) return;
 
-    if (images.length === 1) {
+    if (imageList.length === 1) {
       container.className = 'images single';
-      const img = document.createElement('img');
-      img.src = images[0];
+      var img = document.createElement('img');
+      img.src = imageList[0];
       container.appendChild(img);
     } else {
-      const cols = images.length <= 4 ? 2 : 3;
+      var cols = imageList.length <= 4 ? 2 : 3;
       container.className = 'images grid cols-' + cols;
-      images.forEach(function(src) {
-        const img = document.createElement('img');
-        img.src = src;
+      for (var i = 0; i < imageList.length; i++) {
+        var img = document.createElement('img');
+        img.src = imageList[i];
         container.appendChild(img);
-      });
+      }
     }
   }
 
-  // 设置时间（强制北京时间 UTC+8）
   function setTime() {
-    const utc = new Date().getTime() + new Date().getTimezoneOffset() * 60000;
-    const now = new Date(utc + 8 * 3600000);
-    const hours = now.getHours();
-    let period = '';
+    var now = new Date();
+    var utcTime = now.getTime() + now.getTimezoneOffset() * 60000;
+    var bjTime = new Date(utcTime + 8 * 3600000);
+    var hours = bjTime.getHours();
+    var minutes = bjTime.getMinutes().toString().padStart(2, '0');
+
+    var period = '晚上';
     if (hours < 6) period = '凌晨';
     else if (hours < 9) period = '早上';
     else if (hours < 12) period = '上午';
     else if (hours < 14) period = '中午';
     else if (hours < 18) period = '下午';
-    else period = '晚上';
 
-    const minutes = now.getMinutes().toString().padStart(2, '0');
     setText('time-text', period + hours + ':' + minutes);
   }
 
-  // 初始化
   function init() {
-    const data = getParams();
+    var data = getParams();
+
+    // 封面区域的头像和昵称
+    setText('profile-name', data.nickname);
+    document.getElementById('profile-avatar').src = data.avatar;
+
+    // 封面图（支持自定义）
+    if (data.cover) {
+      document.getElementById('cover-img').src = data.cover;
+    }
+
+    // 动态区域
     setText('nickname', data.nickname);
     setText('content', data.content);
-
-    if (data.avatar) {
-      document.getElementById('avatar').src = data.avatar;
-    }
+    document.getElementById('avatar').src = data.avatar;
 
     renderImages(data.images);
     setTime();
